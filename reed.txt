@@ -1,0 +1,7 @@
+echo "# Md-Shaharia-Bappy-s-portfolio" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/shahariaislam314/Md-Shaharia-Bappy-s-portfolio.git
+git push -u origin main

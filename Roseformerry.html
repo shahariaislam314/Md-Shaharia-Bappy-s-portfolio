@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Rose Day</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --rose-red: #d30f38;
+        --rose-pink: #ff4d6d;
+        --stem-green: #2d6a4f;
+        --water-blue: #4cc9f0;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: radial-gradient(circle at center, #1a0505 0%, #000000 100%);
+        height: 100vh;
+        overflow: hidden;
+        font-family: 'Montserrat', sans-serif; /* Normal font for everything */
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* ---------- START SCREEN ---------- */
+    #start-screen {
+        position: fixed;
+        inset: 0;
+        background: black;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
+        transition: opacity 1.5s ease;
+    }
+
+    /* PULSING BUTTON EFFECT */
+    #start-btn {
+        padding: 15px 50px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        font-size: 1.2rem;
+        background: transparent;
+        color: var(--rose-pink);
+        border: 2px solid var(--rose-pink);
+        cursor: pointer;
+        border-radius: 50px;
+        transition: 0.4s;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        animation: pulseGlow 2s infinite; /* Continuous effect */
+    }
+
+    @keyframes pulseGlow {
+        0% { box-shadow: 0 0 5px var(--rose-pink); transform: scale(1); }
+        50% { box-shadow: 0 0 25px var(--rose-pink); transform: scale(1.05); }
+        100% { box-shadow: 0 0 5px var(--rose-pink); transform: scale(1); }
+    }
+
+    #start-btn:hover {
+        background: var(--rose-pink);
+        color: white;
+        box-shadow: 0 0 50px var(--rose-pink);
+    }
+
+    /* ---------- MAIN SCENE ---------- */
+    #scene {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        display: none; 
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px;
+    }
+
+    /* ---------- TITLE (TOP) ---------- */
+    #header-msg {
+        margin-top: 20px;
+        opacity: 0;
+        transition: opacity 2s ease;
+        z-index: 10;
+        text-align: center;
+    }
+
+    #header-msg h1 {
+        font-family: 'Cinzel Decorative', serif;
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        background: linear-gradient(to bottom, #ff9a9e, #fecfef);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 0 10px rgba(255, 77, 109, 0.5));
+    }
+
+    /* ---------- CENTER STAGE ---------- */
+    #center-stage {
+        position: relative;
+        flex-grow: 1;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end; 
+        padding-bottom: 20px;
+    }
+
+    .water-stream {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 2px;
+        height: 0;
+        background: linear-gradient(to bottom, transparent, var(--water-blue));
+        opacity: 0;
+        box-shadow: 0 0 15px var(--water-blue);
+        z-index: 5;
+    }
+
+    .water-ripple {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%) scale(0);
+        width: 60px;
+        height: 20px;
+        border-radius: 50%;
+        border: 2px solid var(--water-blue);
+        opacity: 0;
+    }
+
+    #rose-svg {
+        height: 55vh;
+        width: auto;
+        overflow: visible;
+        filter: drop-shadow(0 0 20px rgba(211, 15, 56, 0.3));
+    }
+
+    .rose-stem {
+        fill: none;
+        stroke: var(--stem-green);
+        stroke-width: 4;
+        stroke-linecap: round;
+        stroke-dasharray: 600;
+        stroke-dashoffset: 600;
+        transition: stroke-dashoffset 3s ease-in-out;
+    }
+
+    .rose-leaf {
+        fill: var(--stem-green);
+        transform-origin: center;
+        transform: scale(0);
+        transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .petal {
+        transform-origin: 100px 70px;
+        opacity: 0;
+        transform: scale(0) rotate(0deg);
+        transition: all 2.5s ease-out;
+    }
+
+    /* ---------- MESSAGE (BOTTOM) ---------- */
+    #footer-msg {
+        text-align: center;
+        max-width: 700px;
+        margin-bottom: 40px;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 2s ease;
+        z-index: 10;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        border-radius: 15px;
+    }
+
+    #footer-msg p {
+        font-family: 'Montserrat', sans-serif; /* Clean, normal font */
+        font-size: clamp(1rem, 2.5vw, 1.3rem);
+        line-height: 1.8;
+        color: #ffdde1;
+        letter-spacing: 1px;
+    }
+
+    .highlight {
+        color: var(--rose-pink);
+        font-weight: 600;
+    }
+
+    /* ---------- FIREFLIES ---------- */
+    .firefly {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background: #ffd700;
+        border-radius: 50%;
+        box-shadow: 0 0 10px #ffd700;
+        animation: fly 10s infinite alternate ease-in-out;
+        opacity: 0;
+    }
+
+    @keyframes fly {
+        0% { transform: translate(0, 0); opacity: 0; }
+        20% { opacity: 0.8; }
+        100% { transform: translate(var(--mx), var(--my)); opacity: 0; }
+    }
+
+    .show-block { display: flex !important; }
+    .fade-in { opacity: 1 !important; transform: translateY(0) !important; }
+</style>
+</head>
+<body>
+
+<div id="start-screen">
+    <h2 style="margin-bottom:30px; font-family:'Cinzel Decorative'; color: #fff; letter-spacing: 4px;">A Gift For You</h2>
+    <button id="start-btn">Click to Bloom</button>
+</div>
+
+<div id="scene">
+    <div id="header-msg">
+        <h1>Happy Rose Day</h1>
+    </div>
+
+    <div id="center-stage">
+        <div class="water-stream" id="water-stream"></div>
+        <div class="water-ripple" id="water-ripple"></div>
+
+        <svg id="rose-svg" viewBox="0 0 200 500">
+            <defs>
+                <linearGradient id="petalGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#ff9a9e;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#d30f38;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            
+            <path class="rose-stem" id="stem" d="M100,500 Q90,350 100,200" />
+            <path class="rose-leaf" id="leaf1" d="M100,350 Q60,320 40,340 Q60,370 100,350" />
+            <path class="rose-leaf" id="leaf2" d="M100,280 Q140,250 160,270 Q140,300 100,280" />
+            
+            <g id="flower-head" transform="translate(0, 130)">
+                <path class="petal layer1" d="M100,70 C70,40 40,90 100,120 C160,90 130,40 100,70" fill="url(#petalGradient)" />
+                <path class="petal layer1" d="M100,70 C130,40 160,90 100,120" fill="#99001b" transform="rotate(45, 100, 95)" />
+                <path class="petal layer1" d="M100,70 C70,40 40,90 100,120" fill="#99001b" transform="rotate(-45, 100, 95)" />
+                <path class="petal layer2" d="M100,80 C80,60 60,90 100,110 C140,90 120,60 100,80" fill="url(#petalGradient)" />
+                <ellipse class="petal layer2" cx="100" cy="90" rx="20" ry="30" fill="#c41c3b" transform="rotate(20, 100, 90)" />
+                <ellipse class="petal layer2" cx="100" cy="90" rx="20" ry="30" fill="#c41c3b" transform="rotate(-20, 100, 90)" />
+                <path class="petal layer3" d="M100,85 Q115,85 110,105 Q100,115 90,105 Q85,85 100,85" fill="#ffc2c2" />
+            </g>
+        </svg>
+    </div>
+
+    <div id="footer-msg">
+        <p>
+            Hey you, the <span class="highlight">rose of my life</span>.<br>
+            You give me all the color and warmth I need.<br>
+            Your thorns protect me like a warrior.<br>
+            I want to care for you just as I would a rose.<br>
+            <span class="highlight">Forever.</span>
+        </p>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const startBtn = document.getElementById("start-btn");
+    const startScreen = document.getElementById("start-screen");
+    const scene = document.getElementById("scene");
+    const headerMsg = document.getElementById("header-msg");
+    const footerMsg = document.getElementById("footer-msg");
+    const stem = document.getElementById("stem");
+    const leaves = document.querySelectorAll(".rose-leaf");
+    const petals = document.querySelectorAll(".petal");
+    const waterStream = document.getElementById("water-stream");
+    const waterRipple = document.getElementById("water-ripple");
+
+    startBtn.addEventListener("click", () => {
+        startScreen.style.opacity = "0";
+        setTimeout(() => {
+            startScreen.style.display = "none";
+            scene.classList.add("show-block");
+            createFireflies(); 
+
+            // Water Effect
+            waterStream.style.transition = "height 1s ease-in, opacity 0.5s";
+            waterStream.style.opacity = "1";
+            waterStream.style.height = "80%";
+
+            setTimeout(() => {
+                waterRipple.style.transition = "transform 1s ease-out, opacity 1s";
+                waterRipple.style.opacity = "1";
+                waterRipple.style.transform = "translateX(-50%) scale(1.5)";
+            }, 800);
+
+            setTimeout(() => {
+                waterStream.style.opacity = "0";
+                waterRipple.style.opacity = "0";
+                
+                // Bloom Rose
+                stem.style.strokeDashoffset = "0";
+                setTimeout(() => {
+                    leaves.forEach((leaf, i) => {
+                        setTimeout(() => leaf.style.transform = "scale(1)", i * 300);
+                    });
+                }, 1500);
+
+                setTimeout(() => {
+                    petals.forEach((p, index) => {
+                        setTimeout(() => {
+                            p.style.opacity = "1";
+                            p.style.transform = p.getAttribute("transform") ? 
+                                p.getAttribute("transform").replace("scale(0)", "scale(1)") : "scale(1)";
+                        }, index * 200);
+                    });
+                }, 3000);
+
+                setTimeout(() => headerMsg.classList.add("fade-in"), 4500);
+                setTimeout(() => footerMsg.classList.add("fade-in"), 6000);
+
+            }, 2000);
+        }, 1500);
+    });
+
+    function createFireflies() {
+        for (let i = 0; i < 40; i++) {
+            const f = document.createElement("div");
+            f.className = "firefly";
+            f.style.left = Math.random() * 100 + "vw";
+            f.style.top = Math.random() * 100 + "vh";
+            f.style.setProperty('--mx', (Math.random() * 200 - 100) + 'px');
+            f.style.setProperty('--my', (Math.random() * 200 - 100) + 'px');
+            f.style.animationDelay = Math.random() * 5 + "s";
+            f.style.animationDuration = (Math.random() * 5 + 5) + "s";
+            document.body.appendChild(f);
+        }
+    }
+});
+</script>
+
+</body>
+</html>
